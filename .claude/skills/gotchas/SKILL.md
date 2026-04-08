@@ -1,52 +1,52 @@
 ---
 name: gotchas
-description: "セッション中に遭遇した罠・ワークアラウンドを docs/gotchas.md に追記する。エラーや予期しない挙動に遭遇した後、またはセッション終了前に使用。整理・陳腐化チェックは entropy-detector エージェントが担当。"
+description: "Record pitfalls and workarounds encountered during a session to docs/gotchas.md. Use after encountering errors or unexpected behavior, or before ending a session. Cleanup and staleness checks are handled by the entropy-detector agent."
 user-invocable: true
 ---
 
-# Gotchas 追記スキル
+# Gotchas Skill
 
-セッション中に遭遇した「既知の罠と回避策」を `docs/gotchas.md` に追記する。
+Record "known pitfalls and workarounds" discovered during a session to `docs/gotchas.md`.
 
-> 既存エントリの整理・陳腐化チェックは `entropy-detector` エージェントが担当する。
+> Cleanup and staleness checks of existing entries are handled by the `entropy-detector` agent.
 
-## 手順
+## Steps
 
-1. **現状を読む** — `docs/gotchas.md` を Read で読み、既存のカテゴリとエントリを把握する
+1. **Read current state** — Read `docs/gotchas.md` to understand existing categories and entries
 
-2. **セッションを振り返る** — 会話コンテキストから以下を探す:
-   - エラーメッセージとその回避策
-   - ドキュメントと実際の挙動のギャップ
-   - 型の不一致やランタイム制約
-   - ライブラリ・フレームワークの非直感的な仕様
-   - ビルド・デプロイ時の罠
+2. **Review the session** — Search conversation context for:
+   - Error messages and their workarounds
+   - Gaps between documentation and actual behavior
+   - Type mismatches or runtime constraints
+   - Non-intuitive library/framework behaviors
+   - Build/deploy pitfalls
 
-3. **候補を提示する** — 発見した罠を一覧で提示し、ユーザーに確認を求める:
+3. **Present candidates** — List discovered pitfalls and ask user for confirmation:
    ```
-   セッション中に以下の gotcha を発見しました:
+   Found the following gotchas during this session:
 
-   1. [カテゴリ] 説明 → 回避策
-   2. [カテゴリ] 説明 → 回避策
+   1. [Category] Description -> Workaround
+   2. [Category] Description -> Workaround
 
-   追記するものを選んでください（番号指定、または全て）。
+   Select which to add (by number, or "all").
    ```
-   - 候補がない場合は「このセッションでは新しい gotcha は見つかりませんでした」と報告して終了する
+   - If no candidates: report "No new gotchas found in this session" and finish
 
-4. **重複チェック** — 既存エントリと意味的に重複していないか確認する。重複がある場合は既存エントリの更新を提案する
+4. **Duplicate check** — Verify no semantic overlap with existing entries. If duplicates exist, propose updating the existing entry
 
-5. **追記する** — ユーザーが選択したエントリを適切なカテゴリセクションに追記する:
-   - 既存カテゴリに該当するものはそのセクションに追加
-   - 該当カテゴリがなければ新規セクションを作成（`## カテゴリ名` 形式）
-   - カテゴリ内のエントリは関連性でグルーピングする
+5. **Append** — Add user-selected entries to the appropriate category section:
+   - Add to existing category if applicable
+   - Create new section (`## Category Name`) if no match
+   - Group entries by relevance within categories
 
-## フォーマット規約
+## Format Convention
 
-既存エントリと一貫したスタイルを維持する:
+Maintain consistent style with existing entries:
 
 ```markdown
-- 問題の簡潔な説明 → 解決策・回避策
+- Brief description of the problem -> Solution/workaround
 ```
 
-## 注意事項
+## Notes
 
-- ユーザーの確認なしにエントリを追加しない
+- Never add entries without user confirmation

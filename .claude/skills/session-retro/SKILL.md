@@ -1,66 +1,66 @@
 ---
 name: session-retro
-description: "セッション終了前にその回の学びをリポジトリに還元する。バグ修正、機能実装、デバッグなど実作業を伴うセッションの最後に使用。学びを gotcha（外部の罠）か harness（AI行動改善）に分類し、適切なハーネスコンポーネントに追記する。コミット・PR作成の直前、または作業完了の合図として呼ぶと効果的。"
+description: "Distill session learnings back into the repository before ending a session. Use at the end of sessions involving bug fixes, feature implementation, or debugging. Classifies learnings as gotcha (external pitfall) or harness (AI behavior improvement) and appends to appropriate harness components. Most effective when called just before commit/PR creation or as a completion signal."
 user-invocable: true
 ---
 
 # Session Retro
 
-セッション中の学びをリポジトリに還元するトリアージスキル。
+A triage skill that distills session learnings back into the repository.
 
-## なぜリポジトリに残すのか
+## Why Persist to the Repository
 
-ローカルメモリは個人の会話コンテキストにしか効かない。リポジトリに残せば、CI・他のエージェント・将来のセッション全てが恩恵を受ける。
+Local memory only affects personal conversation context. Repository-persisted learnings benefit CI, other agents, and all future sessions.
 
-## 分類基準
+## Classification Criteria
 
-| 分類 | 定義 | 例 |
-|------|------|-----|
-| **gotcha** | 外部フレームワーク・ライブラリ・ランタイムの非直感的な仕様 | 「SQLite の CURRENT_TIMESTAMP は UTC」 |
-| **harness** | AI エージェントの行動を改善する知見 | 「バグは実機で確認してからコード修正」 |
-| **skip** | 基礎知識、一時的な状態、コードに残せば十分なもの | 「React の useState は独立」 |
+| Category | Definition | Example |
+|----------|-----------|---------|
+| **gotcha** | Non-intuitive behavior of external frameworks, libraries, or runtimes | "SQLite's CURRENT_TIMESTAMP is UTC" |
+| **harness** | Insights that improve AI agent behavior | "Verify bugs on device before code fixes" |
+| **skip** | Basic knowledge, temporary state, or things sufficiently captured in code | "React useState is independent" |
 
-### harness の保存先を選ぶ
+### Choosing Where to Save Harness Learnings
 
-| 学びの性質 | 保存先 | 例 |
+| Nature of Learning | Destination | Example |
 |---|---|---|
-| 常に適用すべき規約 | `.claude/rules/<topic>.md` | 「バグはデバイスで確認」 |
-| プロジェクト全体の方針変更 | `CLAUDE.md` | 新しいツールの追加 |
-| 繰り返し使うワークフロー | `.claude/skills/` | デプロイ手順 |
-| 自動化すべき強制ルール | hooks in `.claude/settings.json` | フォーマット強制 |
+| Always-applicable conventions | `.claude/rules/<topic>.md` | "Verify bugs on device" |
+| Project-wide policy changes | `CLAUDE.md` | Adding new tools |
+| Reusable workflows | `.claude/skills/` | Deploy procedures |
+| Automatically enforced rules | hooks in `.claude/settings.json` | Format enforcement |
 
-## 手順
+## Steps
 
-1. **現状を読む** — `docs/gotchas.md` と `.claude/rules/` の既存エントリを把握する
+1. **Read current state** — Review `docs/gotchas.md` and `.claude/rules/` existing entries
 
-2. **セッションを振り返る** — 会話コンテキストから学びの候補を抽出する:
-   - 遭遇したエラーとその回避策
-   - ドキュメントと実際の挙動のギャップ
-   - ユーザーからの修正指示
-   - デバッグ中に発見した非自明な挙動
+2. **Review the session** — Extract learning candidates from conversation context:
+   - Errors encountered and their workarounds
+   - Gaps between documentation and actual behavior
+   - Correction instructions from the user
+   - Non-obvious behaviors discovered during debugging
 
-3. **分類して提示する** — 候補を分類し、一覧でユーザーに確認を求める:
+3. **Classify and present** — Classify candidates and ask user for confirmation:
 
    ```
-   セッションの学びを整理しました:
+   Organized session learnings:
 
    [gotcha]
-   1. [カテゴリ] 説明 → 回避策
+   1. [Category] Description -> Workaround
 
    [harness]
-   2. 説明 → 追記先: <保存先>
+   2. Description -> Destination: <path>
 
    [skip]
-   3. 説明（理由: 基礎知識）
+   3. Description (reason: basic knowledge)
 
-   追記するものを選んでください。
+   Select which to add.
    ```
 
-4. **重複チェック** — 既存エントリとの重複確認
+4. **Duplicate check** — Verify no overlap with existing entries
 
-5. **追記する** — gotcha は `docs/gotchas.md` に、harness は選定した保存先に追記
+5. **Append** — Add gotchas to `docs/gotchas.md`, harness learnings to selected destination
 
-## 注意事項
+## Notes
 
-- ユーザーの確認なしにエントリを追加しない
-- skip の判断理由を明示する
+- Never add entries without user confirmation
+- Show reasoning for skip classifications (transparency for user override)

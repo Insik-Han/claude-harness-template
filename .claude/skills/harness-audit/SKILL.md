@@ -1,120 +1,120 @@
 ---
 name: harness-audit
-description: "Claude Code ハーネス構成（CLAUDE.md, settings.json, hooks, agents, skills, rules）をベストプラクティスに照らして監査する。ハーネスの追加・変更後、定期メンテナンス時、または構成の品質を確認したいときに使用。entropy-detector がコード健全性を見るのに対し、こちらはハーネス構成自体の品質を検査する。"
+description: "Audit Claude Code harness configuration (CLAUDE.md, settings.json, hooks, agents, skills, rules) against best practices. Use after adding/changing harness components, during periodic maintenance, or when you want to verify configuration quality. While entropy-detector checks code health, this skill inspects the harness configuration itself."
 user-invocable: true
 argument-hint: "[--focus area] — area: claude-md|hooks|agents|skills|rules|all"
 ---
 
-# Harness Audit スキル
+# Harness Audit Skill
 
-Claude Code のハーネス構成（`.claude/` ディレクトリ + `CLAUDE.md`）をベストプラクティスに照らして監査し、改善提案を出す。
+Audit Claude Code harness configuration (`.claude/` directory + `CLAUDE.md`) against best practices and provide improvement suggestions.
 
-## 使い方
+## Usage
 
 ```
-/harness-audit              # 全領域を監査
-/harness-audit --focus hooks   # hooks のみ重点監査
+/harness-audit                 # Audit all areas
+/harness-audit --focus hooks   # Deep audit on hooks only
 ```
 
-## 監査手順
+## Audit Steps
 
-### 0. ファイル収集
+### 0. File Collection
 
-以下のファイルを Read / Glob で収集する（存在しないものはスキップ）:
+Collect the following files via Read / Glob (skip if missing):
 
 - `CLAUDE.md`
 - `.claude/settings.json`
-- `.claude/settings.local.json`（あれば）
+- `.claude/settings.local.json` (if exists)
 - `.claude/agents/*.md`
 - `.claude/skills/*/SKILL.md`
 - `.claude/rules/*.md`
 
 ---
 
-### 1. CLAUDE.md 品質
+### 1. CLAUDE.md Quality
 
-| チェック項目 | 基準 | 根拠 |
+| Check | Criteria | Rationale |
 |---|---|---|
-| 行数 | ~100行（200行以下） | CLAUDE.md はマップ、百科事典ではない |
-| 技術スタック | package.json の主要依存と一致 | エージェントが古い技術前提で作業するリスク |
-| コマンド一覧 | package.json scripts と一致 | 存在しないコマンドの実行を防ぐ |
-| スキルテーブル | テーブル掲載スキルが `.claude/skills/` に実在する | 削除済みスキル参照の検出 |
-| エージェントテーブル | テーブル掲載エージェントが `.claude/agents/` に実在する | 削除済みエージェント参照を検出 |
-| Hooks セクション | CLAUDE.md 記載の hooks が `.claude/settings.json` に存在する | 主要フックのみ整合を求める |
-| リンク健全性 | 記載された全パスが実在する | 壊れたリンクはエージェントを迷わせる |
+| Line count | ~100 lines (under 200) | CLAUDE.md is a map, not an encyclopedia |
+| Tech stack | Matches major package.json dependencies | Prevents agents from working with outdated assumptions |
+| Commands | Matches package.json scripts | Prevents execution of non-existent commands |
+| Skills table | Listed skills exist in `.claude/skills/` | Detect references to deleted skills |
+| Agents table | Listed agents exist in `.claude/agents/` | Detect references to deleted agents |
+| Hooks section | Listed hooks exist in `.claude/settings.json` | Check only major hooks for consistency |
+| Link health | All listed paths actually exist | Broken links mislead agents |
 
 ---
 
 ### 2. settings.json — Hooks
 
-| チェック項目 | 基準 | 根拠 |
+| Check | Criteria | Rationale |
 |---|---|---|
-| PreToolUse matcher | 各 hook に `matcher` が設定されている | matcher なしは全ツールに発火し過負荷 |
-| 危険操作ガード | `rm -rf`, `DROP TABLE`, `--force`, `--no-verify` をブロック | 不可逆操作の防止 |
-| SessionStart | ブランチ・変更状態の表示 | セッション開始時のコンテキスト把握 |
+| PreToolUse matcher | Each hook has a `matcher` set | Without matcher, fires on all tools causing overload |
+| Danger guard | Blocks `rm -rf`, `DROP TABLE`, `--force`, `--no-verify` | Prevent irreversible operations |
+| SessionStart | Shows branch and change status | Context awareness at session start |
 
 ---
 
 ### 3. Agents
 
-各 `.claude/agents/*.md` について:
+For each `.claude/agents/*.md`:
 
-| チェック項目 | 基準 | 根拠 |
+| Check | Criteria | Rationale |
 |---|---|---|
-| frontmatter 必須フィールド | `name`, `description` が存在する | 自動検出・呼び出しに必須 |
-| description の質 | WHEN（いつ使うか）を含む | トリガー精度に直結 |
-| model 指定 | 用途に応じた model が明示されている | コスト最適化 |
-| 参照パスの実在 | agent 内で参照するファイルパスが全て実在する | 壊れた参照は空振り |
-| examples | description に具体的な使用例がある | auto-invoke の精度向上 |
+| Required frontmatter | `name`, `description` exist | Required for auto-detection and invocation |
+| Description quality | Includes WHEN (when to use), not just WHAT | Directly affects trigger accuracy |
+| Model specification | Appropriate model explicitly set | Cost optimization |
+| Reference paths | All referenced file paths actually exist | Broken references cause misses |
+| Examples | Description includes concrete usage examples | Improves auto-invoke accuracy |
 
 ---
 
 ### 4. Skills
 
-各 `.claude/skills/*/SKILL.md` について:
+For each `.claude/skills/*/SKILL.md`:
 
-| チェック項目 | 基準 | 根拠 |
+| Check | Criteria | Rationale |
 |---|---|---|
-| frontmatter 必須フィールド | `name`, `description`, `user-invocable` が存在する | 検出・メニュー表示に必須 |
-| description の質 | いつ使うか + 何をするかの両方を含む | under-trigger 防止 |
-| 行数 | SKILL.md が 500行以下 | 超える場合は references/ に分割 |
+| Required frontmatter | `name`, `description`, `user-invocable` exist | Required for detection and menu display |
+| Description quality | Includes both when to use and what it does | Prevents under-triggering |
+| Line count | SKILL.md under 500 lines | Split to references/ if exceeded |
 
 ---
 
 ### 5. Rules
 
-| チェック項目 | 基準 | 根拠 |
+| Check | Criteria | Rationale |
 |---|---|---|
-| カバレッジ | testing, security, git-workflow は最低限存在 | 基本的な品質ゲート |
-| 相互参照 | development-workflow.md が参照するスキル・エージェントが実在 | フロー定義の整合性 |
-| 重複 | rules と CLAUDE.md で同じ内容を二重管理していない | 更新漏れの原因 |
+| Coverage | testing, security, git-workflow exist at minimum | Basic quality gates |
+| Cross-references | development-workflow.md references existing skills/agents | Workflow definition consistency |
+| Duplication | Rules and CLAUDE.md don't duplicate the same content | Prevents update drift |
 
 ---
 
-## 出力フォーマット
+## Output Format
 
 ### Findings
 
-| Severity | 基準 |
+| Severity | Criteria |
 |---|---|
-| **CRITICAL** | エージェントの動作に直接影響（壊れた参照、不一致） |
-| **HIGH** | ベストプラクティスからの重大な逸脱 |
-| **MEDIUM** | 改善推奨だが動作には影響しない |
-| **LOW** | 細かい品質向上の提案 |
+| **CRITICAL** | Directly impacts agent behavior (broken references, inconsistencies) |
+| **HIGH** | Significant deviation from best practices |
+| **MEDIUM** | Recommended improvement but no operational impact |
+| **LOW** | Minor quality suggestions |
 
 ### Health Score
 
-各領域を 5 段階で評価。
+Rate each area on a 5-point scale.
 
 ### Recommendations
 
-優先度順に最大 5 件の具体的アクションを提案する。
+Up to 5 concrete actions in priority order.
 
 ---
 
-## ガイドライン
+## Guidelines
 
-- 実ファイルを Read して検証する — 推測しない
-- 本質的な問題のみ報告する — スタイルの好みは報告しない
-- 各 finding に具体的な修正方法を含める
-- 問題がなければ「健全」と報告する — 問題を捏造しない
+- Read actual files to verify — don't guess
+- Report only substantive issues — not style preferences
+- Include concrete fix for each finding
+- If healthy, report as healthy — don't fabricate problems

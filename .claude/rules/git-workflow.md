@@ -25,7 +25,5 @@ When creating PRs:
 
 ## PR Review
 
-PR review via:
-
 - Chain PR: `gh pr create --base <parent-branch>`
 - CI: lint + format + typecheck on push/PR
