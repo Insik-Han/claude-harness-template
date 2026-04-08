@@ -24,16 +24,7 @@
         ]
       }
     ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo \"branch: $(git branch --show-current)\" && git diff --stat HEAD 2>/dev/null | tail -1"
-          }
-        ]
-      }
-    ],
+    "SessionStart": [],
     "PostToolUse": [],
     "Stop": [
       {
