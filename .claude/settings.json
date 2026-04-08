@@ -31,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "FILES=$(git diff --name-only HEAD -- 'docs/*.md' '.claude/rules/*.md' 2>/dev/null | tr '\\n' ', ' | sed 's/,$//'); if [ -n \"$FILES\" ]; then echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"Stop\\\",\\\"additionalContext\\\":\\\"Changed md files: $FILES — please verify readability and formatting consistency.\\\"}}\"; fi"
+            "command": "FILES=$(git diff --name-only HEAD -- 'docs/*.md' '.claude/rules/*.md' 2>/dev/null | tr '\\n' ', ' | sed 's/,$//'); if [ -n \"$FILES\" ]; then echo \"{\\\"stopReason\\\":\\\"Changed md files: $FILES — please verify readability and formatting consistency.\\\"}\"; fi"
           }
         ]
       }
