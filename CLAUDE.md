@@ -12,13 +12,21 @@
 
 ## Tech Stack
 
-| Layer            | Technology        |
-| ---------------- | ----------------- |
-| Framework        | {{FRAMEWORK}}     |
-| Language         | TypeScript        |
-| Package Manager  | pnpm              |
-| Linter/Formatter | oxlint + oxfmt (ultracite) |
-| Git Hooks        | lefthook          |
+| Layer            | Technology                  |
+| ---------------- | --------------------------- |
+| Language         | {{LANGUAGE}}                |
+| Framework        | {{FRAMEWORK}}               |
+| Hosting          | {{HOSTING}}                 |
+| Database         | {{DATABASE}}                |
+| Auth             | {{AUTH}}                    |
+| AI               | {{AI}}                      |
+| UI               | {{UI}}                      |
+| Testing          | {{TESTING}}                 |
+| Linter/Formatter | {{LINTER}}                  |
+| Package Manager  | {{PACKAGE_MANAGER}}         |
+| Git Hooks        | {{GIT_HOOKS}}               |
+
+<!-- Remove rows that don't apply to your project. Add rows as needed. -->
 
 ## Runtime Constraints
 
