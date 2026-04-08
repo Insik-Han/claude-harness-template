@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(pnpm *)",
+      "Bash(npx *)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "case \"$CLAUDE_TOOL_INPUT\" in *'rm -rf'*|*'DROP TABLE'*|*'DROP DATABASE'*|*'--force'*|*'--no-verify'*) echo 'BLOCK: Dangerous operation detected' >&2; exit 2;; esac"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"branch: $(git branch --show-current)\" && git diff --stat HEAD 2>/dev/null | tail -1"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILES=$(git diff --name-only HEAD -- 'docs/*.md' '.claude/rules/*.md' 2>/dev/null | tr '\\n' ', ' | sed 's/,$//'); if [ -n \"$FILES\" ]; then echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"Stop\\\",\\\"additionalContext\\\":\\\"Changed md files: $FILES — please verify readability and formatting consistency.\\\"}}\"; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
