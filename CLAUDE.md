@@ -91,5 +91,4 @@ pnpm test             # Run tests
 ## Hooks
 
 - `PreToolUse (Bash)`: Block dangerous operations (rm -rf, DROP TABLE, --force)
-- `SessionStart`: Show branch & change status
 - `Stop`: Check for uncommitted doc changes

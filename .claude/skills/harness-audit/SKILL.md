@@ -51,7 +51,6 @@ Collect the following files via Read / Glob (skip if missing):
 |---|---|---|
 | PreToolUse matcher | Each hook has a `matcher` set | Without matcher, fires on all tools causing overload |
 | Danger guard | Blocks `rm -rf`, `DROP TABLE`, `--force`, `--no-verify` | Prevent irreversible operations |
-| SessionStart | Shows branch and change status | Context awareness at session start |
 
 ---
 

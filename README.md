@@ -57,7 +57,6 @@ Pre-configured hooks in `.claude/settings.json`:
 | Hook | Trigger | Purpose |
 |------|---------|---------|
 | `PreToolUse` | Bash commands | Blocks dangerous operations (`rm -rf`, `DROP TABLE`, `--force`, `--no-verify`) |
-| `SessionStart` | Session begins | Shows current branch and uncommitted changes |
 | `Stop` | Session ends | Warns about uncommitted doc/rule changes |
 
 ## Agents
